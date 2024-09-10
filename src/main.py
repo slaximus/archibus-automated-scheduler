@@ -14,6 +14,7 @@ def parse_args():
     parser.add_argument('--username', type=str, help='Username (case-insensitive)')
     parser.add_argument('--password', type=str, help='Password (case-insensitive)')
     parser.add_argument('--building_name', type=str, help='Select a Building')
+    parser.add_argument('--floor', type=str, help='Floor Acronym Number, ex. JT01')
     parser.add_argument('--workstation', type=str, help='WorkPoint-WorkStation')
     return parser.parse_args()
 
@@ -23,6 +24,7 @@ class archibus_scheduler():
         self.username = args.username
         self.password = args.password
         self.building_name = args.building_name
+        self.floor = args.floor
         self.workstation = args.workstation
 
         # derive args
@@ -114,6 +116,11 @@ class archibus_scheduler():
         input_day.click()
         print(f'Date Selected: {self.next_month}')
 
+        # Select Floor
+        input_floor = self.driver.find_element(By.XPATH, f"//div[contains(text(), '{self.floor}')]")
+        input_floor.click()
+        print(f'Floor Selected: {self.next_month}')
+
         ## Select Seat
         input_selected_seat = self.driver.find_element(By.XPATH, f"//p[contains(text(), '{self.workstation} -')]")
         print(f"Found element: {input_selected_seat.text}")
@@ -140,6 +147,7 @@ if __name__ == "__main__":
     # sys.argv = [ 'main.py',
     #              '--username', 'LASTFIRST',
     #              '--building_name', 'BUILDING',
+    #              '--floor', 'ACRONYMNUMBER',    
     #              '--workstation', 'NUMBER',
     #              '--password', 'PASSWORD'
     #              ]
