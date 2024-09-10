@@ -133,6 +133,10 @@ class archibus_scheduler():
         input_floor.click()
         print(f'Floor Selected: {self.next_month}')
 
+        # Search Parameters
+        input_search = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Search')]")
+        input_search.click()
+
         ## Select Seat
         input_selected_seat = self.driver.find_element(By.XPATH, f"//p[contains(text(), '{self.workstation} -')]")
         print(f"Found element: {input_selected_seat.text}")
@@ -149,6 +153,7 @@ class archibus_scheduler():
         # Confirm Booking
         input_book_seat = self.driver.find_element(By.XPATH, "//button[contains(text(), 'BOOK')]")
         input_book_seat.click()
+        print("Confirmation seat is booked")
 
         self.driver.close()
 
