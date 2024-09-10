@@ -136,7 +136,7 @@ class archibus_scheduler():
 
         # Confirm Booking
         input_book_seat = self.driver.find_element(By.XPATH, "//button[contains(text(), 'BOOK')]")
-        #input_book_seat.click()
+        input_book_seat.click()
 
         self.driver.close()
 
