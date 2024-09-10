@@ -39,6 +39,12 @@ class archibus_scheduler():
 
         service = Service(ChromeDriverManager().install())
         chrome_options = webdriver.ChromeOptions() 
+
+        chrome_options.add_argument("--headless")  # Headless mode
+        chrome_options.add_argument("--no-sandbox")  # Bypass OS security model
+        chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+        chrome_options.add_argument("--disable-gpu")  # Disable GPU rendering
+        chrome_options.add_argument("--remote-debugging-port=9222")  # Required for headless mode
         chrome_options.add_argument('--allow-running-insecure-content')
         chrome_options.add_argument('--ignore-certificate-errors')
         chrome_options.add_argument('--ignore-ssl-errors')
