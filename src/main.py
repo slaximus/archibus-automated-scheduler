@@ -53,7 +53,7 @@ class archibus_scheduler():
         self.driver = webdriver.Chrome(service=service, options = chrome_options)
         
         # Min Page Load Time
-        self.driver.implicitly_wait(5) 
+        self.driver.implicitly_wait(15) 
 
     # Known Popups
     def popups(self):
