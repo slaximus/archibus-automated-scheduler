@@ -36,7 +36,7 @@ class archibus_scheduler():
         # derive args
         self.current_date = datetime.now().strftime("%Y-%m-%d")
         self.next_month = str((datetime.now() + timedelta(weeks=4)).strftime("%Y-%m-%d"))
-        self.next_month_day = str((datetime.now() + timedelta(weeks=4)).strftime("%#d"))
+        self.next_month_day = str((datetime.now() + timedelta(weeks=4)).strftime("%d")).lstrip("0") # Windows "%#d" Unix "%-d"
 
     ## Setup Webdriver
     def setup(self):
