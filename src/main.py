@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+import chromedriver_autoinstaller
 
 import time
 from datetime import datetime, timedelta
@@ -32,17 +33,14 @@ class archibus_scheduler():
     ## Setup Webdriver
     def setup(self):
 
-        options = webdriver.EdgeOptions()
-        options.add_argument('--allow-running-insecure-content')
-        options.add_argument('--ignore-certificate-errors')
-        options.add_argument('--ignore-ssl-errors')
-        options.add_argument("--disable-notifications")
+        chromedriver_autoinstaller.install()
+        chrome_options = webdriver.ChromeOptions() 
+        chrome_options.add_argument('--allow-running-insecure-content')
+        chrome_options.add_argument('--ignore-certificate-errors')
+        chrome_options.add_argument('--ignore-ssl-errors')
+        chrome_options.add_argument("--disable-notifications")
 
-
-        from selenium.webdriver.edge.service import Service
-        Se = Service("src\msedgedriver.exe")
-
-        self.driver = webdriver.Edge(service=Se, options=options)
+        self.driver = webdriver.Chrome(options = chrome_options)
         
         # Min Page Load Time
         self.driver.implicitly_wait(5) 
