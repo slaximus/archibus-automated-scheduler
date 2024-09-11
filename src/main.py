@@ -73,6 +73,12 @@ class archibus_scheduler():
             reassignment.click()
         except NoSuchElementException:
             pass
+        try:
+            # A seat has already been booked, do you want to rebook
+            reassignment = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Yes')]")
+            reassignment.click()
+        except NoSuchElementException:
+            pass
 
     # Selenium Actions to Walk Webpage
     def actions(self):
@@ -112,6 +118,8 @@ class archibus_scheduler():
         input_building.click()  
 
         ### Workspace Booking
+        # Manual time delays added as selenium able to find/click elements but fails on final booking button
+        # WebDriverWait, ActionChains considered but did not resolve the issue
 
         # Known stop for popups
         self.popups()
@@ -127,32 +135,43 @@ class archibus_scheduler():
         input_day = self.driver.find_element(By.XPATH, f"//div[contains(@class, 'react-datepicker__day') and contains(text(), '{self.next_month_day}')]")
         input_day.click()
         print(f'Date Selected: {self.next_month}')
+        time.sleep(2)
 
         # Select Floor
         input_floor = self.driver.find_element(By.XPATH, f"//div[contains(text(), '{self.floor}')]")
         input_floor.click()
-        print(f'Floor Selected: {self.next_month}')
+        print(f'Floor Selected: {self.floor}')
+        time.sleep(2)
 
         # Search Parameters
         input_search = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Search')]")
         input_search.click()
+        time.sleep(2)
 
         ## Select Seat
         input_selected_seat = self.driver.find_element(By.XPATH, f"//p[contains(text(), '{self.workstation} -')]")
         print(f"Found element: {input_selected_seat.text}")
         input_selected_seat.click()
+        time.sleep(2)
 
         # Book Seat
         input_book_seat = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Book')]")
         input_book_seat.click()
+        time.sleep(2)
 
         # Book for 'Myself'
         input_book_myself = self.driver.find_element(By.XPATH, "//span[contains(text(), 'Myself')]")
         input_book_myself.click()
+        time.sleep(2)
 
-        # Confirm Booking
+        # Booking Seat
         input_book_seat = self.driver.find_element(By.XPATH, "//button[contains(text(), 'BOOK')]")
         input_book_seat.click()
+
+        # Confirmation page
+        self.popups()
+        input_confirmation = self.driver.find_element(By.XPATH, "//button[text() = 'GO TO MAIN']") # 'logon-sign-in-btn'
+        input_confirmation.click()
         print("Confirmation seat is booked")
 
         self.driver.close()
