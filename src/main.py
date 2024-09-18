@@ -98,7 +98,7 @@ class archibus_scheduler():
 
         input_log_in = self.driver.find_element(By.CSS_SELECTOR, '[data-testid="logon-sign-in-btn"]') # 'logon-sign-in-btn'
         input_log_in.click()
-        print(f"Logged In: {self.username}")
+        print(f"User Logged In")
 
         ## Building Page
         # Find all elements where the class name contains "BuildingName"
@@ -128,7 +128,7 @@ class archibus_scheduler():
         calendar = self.driver.find_element(By.ID, 'startData_icon')
         calendar.click()
 
-        input_next_month = self.driver.find_element(By.XPATH, "//button[@aria-label='Select next month']")
+        input_next_month = self.driver.find_element(By.XPATH, "//button[@aria-label = 'Select next month']")
         input_next_month.click()
 
         # Look for a class with the day value of 1 month from today
@@ -138,34 +138,34 @@ class archibus_scheduler():
         time.sleep(2)
 
         # Select Floor
-        input_floor = self.driver.find_element(By.XPATH, f"//div[contains(text(), '{self.floor}')]")
+        input_floor = self.driver.find_element(By.XPATH, f"//div[text() = '{self.floor}']")
         input_floor.click()
         print(f'Floor Selected: {self.floor}')
         time.sleep(2)
 
         # Search Parameters
-        input_search = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Search')]")
+        input_search = self.driver.find_element(By.XPATH, "//button[text() = 'Search']")
         input_search.click()
         time.sleep(2)
 
         ## Select Seat
-        input_selected_seat = self.driver.find_element(By.XPATH, f"//p[contains(text(), '{self.workstation} -')]")
-        print(f"Found element: {input_selected_seat.text}")
+        input_selected_seat = self.driver.find_element(By.XPATH, f"//p[text() = '{self.workstation} - Primary Individual Open/Primaire, individuel et ouvert']")
+        print(f"Seat Selected: {input_selected_seat.text}")
         input_selected_seat.click()
         time.sleep(2)
 
         # Book Seat
-        input_book_seat = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Book')]")
+        input_book_seat = self.driver.find_element(By.XPATH, "//button[text() = 'Book']")
         input_book_seat.click()
         time.sleep(2)
 
         # Book for 'Myself'
-        input_book_myself = self.driver.find_element(By.XPATH, "//span[contains(text(), 'Myself')]")
+        input_book_myself = self.driver.find_element(By.XPATH, "//span[text() = 'Myself']")
         input_book_myself.click()
         time.sleep(2)
 
         # Booking Seat
-        input_book_seat = self.driver.find_element(By.XPATH, "//button[contains(text(), 'BOOK')]")
+        input_book_seat = self.driver.find_element(By.XPATH, "//button[text() = 'BOOK']")
         input_book_seat.click()
 
         # Confirmation page
