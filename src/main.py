@@ -29,7 +29,7 @@ class archibus_scheduler():
         # get user input passed by args
         self.username = args.username
         self.password = args.password
-        self.building_name = args.building_name
+        self.building_name = args.building_name.replace("-", "")
         self.floor = args.floor
         self.workstation = args.workstation
 
@@ -37,6 +37,10 @@ class archibus_scheduler():
         self.current_date = datetime.now().strftime("%Y-%m-%d")
         self.next_month = str((datetime.now() + timedelta(weeks=4)).strftime("%Y-%m-%d"))
         self.next_month_day = str((datetime.now() + timedelta(weeks=4)).strftime("%d")).lstrip("0") # Windows "%#d" Unix "%-d"
+
+        # validate archnemesis
+        if self.workstation == '28' and self.floor == 'JT01' and self.username != 'EVANJUS':
+            raise Exception('Workstation is unavailable.')
 
     ## Setup Webdriver
     def setup(self):
