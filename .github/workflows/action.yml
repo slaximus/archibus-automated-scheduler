@@ -2,8 +2,9 @@ name: Archibus-Automated-Scheduler
 
 on:
     workflow_dispatch:
-    schedule:
-      - cron: "0 9 * * 1,3,5"  # Runs at 9:00 AM UTC on Monday, Wednesday, and Friday
+    # # uncomment to activate scheduler
+    # schedule:
+    #    - cron: "0 9 * * 1,3,5"
     
 jobs:
   archibus-automated-scheduler:
@@ -36,4 +37,4 @@ jobs:
 
     - name: python-archibus-scheduler
       run: |
-        python src/main.py ${{ secrets.archibus_scheduling_args }}
+        python src/main.py ${{ secrets.ARCHIBUS_SCHEDULING_ARGS }}

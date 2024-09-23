@@ -14,6 +14,7 @@ Start by forking this repository to your GitHub account.
 In your repository, assign a GitHub secret with the name: ARCHIBUS_SCHEDULING_ARGS. This secret will contain the necessary login credentials and scheduling parameters (username, password, building, etc.).
 
 3. **Schedule In-Office Days**
+Uncomment the repository's Github Action to start the scheduler. See instruction on modifying the cron job to match your in-office days.
 
 ## Secret Argument Details
 > [!WARNING]   
@@ -36,7 +37,8 @@ Example secret
 > [!WARNING] 
 Users are responsible for ensuring their bookings are properly managed. Be sure to cancel any reservations directly through Archibus if they are no longer needed to avoid overbooking or unused reservations.
 
-The Archibus-Automated-Scheduler books one month in advance, as days become available in the system. To assign booking days modify the cron job syntax in the [action.yml](https://github.com/justinj-evans/archibus-automated-scheduler/blob/main/action.yml).
+As days become available, one month in advance, the Archibus-Automated-Scheduler is set to search for and book your workstation. To start the scheduler uncomment the cron job in the repository Github Action:
+*.github\workflows\action.yml* . 
 
 ### Syntax
 A cron schedule consists of 5 fields, each representing a specific unit of time, followed by the days of the week. The format is:
