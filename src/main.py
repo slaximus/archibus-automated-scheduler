@@ -29,7 +29,7 @@ class archibus_scheduler():
         # get user input passed by args
         self.username = args.username
         self.password = args.password
-        self.building_name = args.building_name.replace("-", "")
+        self.building_name = args.building_name.replace("-", " ")
         self.floor = args.floor
         self.workstation = args.workstation
 
