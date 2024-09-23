@@ -13,7 +13,7 @@ Start by forking this repository to your GitHub account.
 2. **Assign Secret to the Repository**   
 In your repository, assign a GitHub secret with the name: ARCHIBUS_SCHEDULING_ARGS. This secret will contain the necessary login credentials and scheduling parameters (username, password, building, etc.).
 
-3. **Schedule In-Office Days**
+3. **Schedule In-Office Days**  
 Uncomment the repository's Github Action to start the scheduler. See instruction on modifying the cron job to match your in-office days.
 
 ## Secret Argument Details
