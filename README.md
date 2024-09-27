@@ -8,23 +8,23 @@ Enter the Archibus-Automated-Scheduler! This tool automatically books your in-of
 # Setup Instructions
 Follow the steps below to configure and use the Archibus Automated Scheduler:
 1. **Fork the Repository**  
-Start by forking this repository to your GitHub account.
+Start by [forking](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo#forking-a-repository) this repository to your GitHub account. 
 
 2. **Assign Secret to the Repository**   
-In your repository, assign a GitHub secret with the name: ARCHIBUS_SCHEDULING_ARGS. This secret will contain the necessary login credentials and scheduling parameters (username, password, building, etc.).
+The assigned secret will contain the necessary login credentials and scheduling parameters (username, password, building, etc.).
 
 3. **Schedule In-Office Days**  
-Uncomment the repository's Github Action to start the scheduler. See instruction on modifying the cron job to match your in-office days.
+Uncomment the repository's Github Action to start the scheduler. Following instruction below to modify the cron job to match your in-office days.
 
-## Secret Argument Details
+## Assign Secret to the Repository
 > [!WARNING]   
 GitHub secrets for username and password are encrypted and hidden, never appearing in logs or the repository. This keeps credentials secure during workflow execution. Users must follow departmental security guidelines.
 
-The secret should be formatted as follows:
+To create secrets on Github see linked [instructions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository). In your repository, assign a GitHub secret with the name: ARCHIBUS_SCHEDULING_ARGS. The secret should be formatted as follows:
 
 - username: Your Archibus username (case-insensitive).
 - password: Your Archibus password (case-insensitive).
-- building_name: The building name for booking. Use the first word (e.g., 'Jean' for 'Jean Talon') or hyphenate multi-word names (e.g., 'Jean-Talon').
+- building_name: The building name for booking. Use the first word (e.g., 'Jean') or hyphenate multi-word name (e.g., 'Jean-Talon').
 - floor: The floor acronym and number, e.g., 'JT01'.
 - workstation: The workstation number to reserve, e.g., '111'.
 
