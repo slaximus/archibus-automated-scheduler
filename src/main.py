@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -33,10 +33,16 @@ class archibus_scheduler():
         self.floor = args.floor
         self.workstation = args.workstation
 
-        # derive args
+        # Dates
         self.current_date = datetime.now().strftime("%Y-%m-%d")
         self.next_month = str((datetime.now() + timedelta(weeks=4)).strftime("%Y-%m-%d"))
-        self.next_month_day = str((datetime.now() + timedelta(weeks=4)).strftime("%d")).lstrip("0") # Windows "%#d" Unix "%-d"
+        self.next_month_day = str((datetime.now() + timedelta(weeks=4)).strftime("%#d")).lstrip("0")
+
+        # Seat formatted datetime
+        self.seat_date = (datetime.now() + timedelta(weeks=4)).strftime("Choose %A, %B %d, %Y")
+        day = (datetime.now() + timedelta(weeks=4)).day
+        suffix = "th" if 11 <= day <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
+        self.seat_date = self.seat_date.replace(f"{day:02d}", f"{day}{suffix}")
 
         # validate archnemesis
         if self.workstation == '28' and self.floor == 'JT01' and self.username != 'EVANJUS':
@@ -136,8 +142,10 @@ class archibus_scheduler():
         input_next_month.click()
 
         # Look for a class with the day value of 1 month from today
-        input_day = self.driver.find_element(By.XPATH, f"//div[contains(@class, 'react-datepicker__day') and contains(text(), '{self.next_month_day}')]")
-        input_day.click()
+        # ActionChains used to simulate click of date, more specific aria-label used 
+        date = self.driver.find_element(By.XPATH, f"//div[@aria-label='{self.seat_date}']")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(date).click().perform()
         print(f'Date Selected: {self.next_month}')
         time.sleep(2)
 
