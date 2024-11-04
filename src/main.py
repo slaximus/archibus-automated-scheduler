@@ -42,7 +42,7 @@ class archibus_scheduler():
         self.seat_date = (datetime.now() + timedelta(weeks=4)).strftime("Choose %A, %B %d, %Y")
         day = (datetime.now() + timedelta(weeks=4)).day
         suffix = "th" if 11 <= day <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
-        self.seat_date = self.seat_date.replace(f"{day:02d}", f"{day}{suffix}")
+        self.seat_date = self.seat_date.replace(f"{day:02d}", f"{day}{suffix}",1)
 
         # validate archnemesis
         if self.workstation == '28' and self.floor == 'JT01' and self.username != 'EVANJUS':
