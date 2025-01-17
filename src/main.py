@@ -63,7 +63,7 @@ class archibus_scheduler():
         #self.driver = webdriver.Chrome(service=service, options = chrome_options)
         # Establish connection to the Dockerized Selenium Grid
         # Define the Selenium Grid URL (localhost:4444 in your case)
-        SELENIUM_GRID_URL = 'http://localhost:4444/wd/hub'
+        SELENIUM_GRID_URL = 'http://selenium:4444/wd/hub'
         self.driver = webdriver.Remote(
             command_executor=SELENIUM_GRID_URL,
             options=chrome_options,
