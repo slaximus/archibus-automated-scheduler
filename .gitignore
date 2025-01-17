@@ -163,3 +163,6 @@ cython_debug/
 
 # Local Testing
 test
+
+# Secrets
+.secrets

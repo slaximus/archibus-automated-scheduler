@@ -1,0 +1,66 @@
+name: Archibus-Automated-Scheduler
+description: "Automated scheduler"
+inputs:
+  scheduling_args:
+    description: "Arguments for the scheduler script."
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.X
+
+    - name: Install dependencies
+      run: python -m pip install -r requirements.txt
+      shell: bash
+      
+    - name: Cache Python dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-python-
+
+    - name: Stop and Remove Selenium Container if already present
+      run: |
+        if [ "$(docker ps -q -f name=selenium)" ]; then
+          docker stop selenium
+          docker rm selenium
+        else
+          echo "Selenium container is not running, skipping stop and remove."
+        fi
+      shell: bash
+
+    - name: Pull Selenium Docker Image
+      run: |
+        docker pull selenium/standalone-chrome:latest
+      shell: bash
+
+    - name: Start Selenium Standalone Chrome
+      run: |
+        docker run -d --name selenium -p 4444:4444 --shm-size=2g selenium/standalone-chrome:latest
+      shell: bash
+
+    - name: Wait for Selenium to Start
+      run: |
+        curl -sSL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -o wait-for-it.sh
+        chmod +x wait-for-it.sh
+        ./wait-for-it.sh localhost:4444 --timeout=30 -- echo "Selenium is ready!"
+      shell: bash
+
+    - name: python-archibus-scheduler
+      run: |
+        python src/main.py ${{ inputs.scheduling_args }}
+      shell: bash
+
+    - name: Stop and Remove Selenium Container
+      run: |
+        docker stop selenium
+        docker rm selenium
+      shell: bash
