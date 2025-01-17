@@ -47,11 +47,27 @@ runs:
         docker run -d --name selenium -p 4444:4444 --shm-size=2g selenium/standalone-chrome:latest
       shell: bash
 
+    - name: Verify Selenium Container is Running
+      run: docker ps -a
+      shell: bash
+
+    - name: Check Full Selenium Logs
+      run: docker logs selenium
+      shell: bash
+
+    - name: Check if Port 4444 is in Use
+      run: netstat -tulnp | grep 4444 || echo "Port 4444 is free"
+      shell: bash
+
     - name: Wait for Selenium to Start
       run: |
         curl -sSL https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -o wait-for-it.sh
         chmod +x wait-for-it.sh
         ./wait-for-it.sh localhost:4444 --timeout=30 -- echo "Selenium is ready!"
+      shell: bash
+
+    - name: Extra Wait for Selenium Readiness
+      run: sleep 10
       shell: bash
 
     - name: Debug Running Docker Containers
