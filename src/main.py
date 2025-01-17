@@ -11,10 +11,6 @@ from datetime import datetime, timedelta
 import argparse
 import sys
 
-from pyvirtualdisplay import Display
-display = Display(visible=0, size=(800, 800))  
-display.start()
-
 def parse_args():
     parser = argparse.ArgumentParser(description='action.yml arguments')
     parser.add_argument('--username', type=str, help='Username (case-insensitive)')
@@ -56,7 +52,7 @@ class archibus_scheduler():
         chrome_options.add_argument("--window-size=1200,1200")
         chrome_options.add_argument("--headless")  # Headless mode
         chrome_options.add_argument("--no-sandbox")  # Bypass OS security model
-        #chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
+        chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
         chrome_options.add_argument("--disable-gpu")  # Disable GPU rendering
         chrome_options.add_argument("--remote-debugging-port=9222")  # Required for headless mode
         chrome_options.add_argument('--allow-running-insecure-content')
@@ -64,7 +60,15 @@ class archibus_scheduler():
         chrome_options.add_argument('--ignore-ssl-errors')
         chrome_options.add_argument("--disable-notifications")
 
-        self.driver = webdriver.Chrome(service=service, options = chrome_options)
+        #self.driver = webdriver.Chrome(service=service, options = chrome_options)
+        # Establish connection to the Dockerized Selenium Grid
+        # Define the Selenium Grid URL (localhost:4444 in your case)
+        SELENIUM_GRID_URL = 'http://localhost:4444/wd/hub'
+        self.driver = webdriver.Remote(
+            command_executor=SELENIUM_GRID_URL,
+            options=chrome_options,
+            keep_alive=True
+        )
         
         # Min Page Load Time
         self.driver.implicitly_wait(15) 
