@@ -54,6 +54,18 @@ runs:
         ./wait-for-it.sh localhost:4444 --timeout=30 -- echo "Selenium is ready!"
       shell: bash
 
+    - name: Debug Running Docker Containers
+      run: docker ps -a
+      shell: bash
+
+    - name: Get Selenium Logs
+      run: docker logs selenium
+      shell: bash
+
+    - name: Verify Selenium Readiness via API
+      run: curl -sSL http://localhost:4444/status || echo "Selenium API not responding"
+      shell: bash
+
     - name: python-archibus-scheduler
       run: |
         python src/main.py ${{ inputs.scheduling_args }}
