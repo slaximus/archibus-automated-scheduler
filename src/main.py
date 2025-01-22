@@ -10,6 +10,8 @@ import time
 from datetime import datetime, timedelta
 import argparse
 import sys
+import ast
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='action.yml arguments')
@@ -18,6 +20,7 @@ def parse_args():
     parser.add_argument('--building_name', type=str, help='Select a Building')
     parser.add_argument('--floor', type=str, help='Floor Acronym Number, ex. JT01')
     parser.add_argument('--workstation', type=str, help='WorkPoint-WorkStation')
+    parser.add_argument('--workstation_backup',type=str, default='[]', required=False, help='WorkPoint-WorkStation-Backup')
     return parser.parse_args()
 
 class archibus_scheduler():
@@ -28,6 +31,7 @@ class archibus_scheduler():
         self.building_name = args.building_name.replace("-", " ")
         self.floor = args.floor
         self.workstation = args.workstation
+        self.workstation_backup = ast.literal_eval(args.workstation_backup)
 
         # Dates
         self.current_date = datetime.now().strftime("%Y-%m-%d")
@@ -93,6 +97,35 @@ class archibus_scheduler():
             reassignment.click()
         except NoSuchElementException:
             pass
+
+    # Selenium Custom Seat Selection
+    def seat_selection(self):
+        seat_options = [self.workstation]
+        seat_options.extend(self.workstation_backup)
+        seat_found = False # flag to break if found a seat
+
+        # Search all combinations
+        for seat in seat_options:
+            if seat_found:
+                break
+
+            workstation_formats = [
+                f"//p[text() = '{seat} - Primary Individual Open/Primaire, individuel et ouvert']",
+                f"//p[text() = '{self.floor}-{int(seat):02} - Secondary Individual/Secondaire et individuel']"
+                ]
+            for format in workstation_formats:
+                try:
+                    input_selected_seat = self.driver.find_element(By.XPATH, format)
+                    print(f"Seat Selected: {input_selected_seat.text}")
+                    seat_found = True
+                    break
+                except:
+                    print(f"Seat Unavailable: {seat}")
+        # Select seat
+        try:
+            input_selected_seat.click()
+        except:
+            raise NoSuchElementException("No available seat found")  # Raise an exception if neither seat is available
 
     # Selenium Actions to Walk Webpage
     def actions(self):
@@ -165,13 +198,7 @@ class archibus_scheduler():
         time.sleep(2)
 
         ## Select Seat
-        # Formats different: '05 - Primary Individual Open/Primaire, individuel et ouvert' and 'JT08-05 - Secondary Individual/Secondaire et individuel'
-        try:
-            input_selected_seat = self.driver.find_element(By.XPATH, f"//p[text() = '{self.workstation} - Primary Individual Open/Primaire, individuel et ouvert']")
-        except NoSuchElementException:
-            input_selected_seat = self.driver.find_element(By.XPATH, f"//p[text() = '{self.floor}-{int(self.workstation):02} - Secondary Individual/Secondaire et individuel']")
-        print(f"Seat Selected: {input_selected_seat.text}")
-        input_selected_seat.click()
+        self.seat_selection()
         time.sleep(2)
 
         # Book Seat
