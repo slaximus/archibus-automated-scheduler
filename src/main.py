@@ -12,7 +12,6 @@ import argparse
 import sys
 import ast
 
-
 def parse_args():
     parser = argparse.ArgumentParser(description='action.yml arguments')
     parser.add_argument('--username', type=str, help='Username (case-insensitive)')
@@ -21,6 +20,8 @@ def parse_args():
     parser.add_argument('--floor', type=str, help='Floor Acronym Number, ex. JT01')
     parser.add_argument('--workstation', type=str, help='WorkPoint-WorkStation')
     parser.add_argument('--workstation_backup',type=str, default='[]', required=False, help='WorkPoint-WorkStation-Backup')
+    parser.add_argument('--advance_reservation',action='store_true', required=False, help='Book 4 weeks and one day ahead')
+
     return parser.parse_args()
 
 class archibus_scheduler():
@@ -32,11 +33,18 @@ class archibus_scheduler():
         self.floor = args.floor
         self.workstation = args.workstation
         self.workstation_backup = ast.literal_eval(args.workstation_backup)
+        self.advance_reservation = args.advance_reservation
 
         # Dates
         self.current_date = datetime.now().strftime("%Y-%m-%d")
-        self.next_month = str((datetime.now() + timedelta(weeks=4)).strftime("%Y-%m-%d"))
-        self.next_month_day = str((datetime.now() + timedelta(weeks=4)).strftime("%#d")).lstrip("0")
+
+        # Check if advance_reservation to change from 4 weeks to 4 weeks + 1 day
+        if self.advance_reservation:
+            self.next_month = str((datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(weeks=4, days=1)).strftime("%Y-%m-%d"))
+            self.next_month_day = str((datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(weeks=4, days=1)).strftime("%#d")).lstrip("0")
+        else:
+            self.next_month = str((datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(weeks=4)).strftime("%Y-%m-%d"))
+            self.next_month_day = str((datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(weeks=4)).strftime("%#d")).lstrip("0")
 
         # Seat formatted datetime
         self.seat_date = (datetime.now() + timedelta(weeks=4)).strftime("Choose %A, %B %d, %Y")
@@ -45,7 +53,7 @@ class archibus_scheduler():
         self.seat_date = self.seat_date.replace(f"{day:02d}", f"{day}{suffix}",1)
 
         # validate archnemesis
-        if self.workstation == '28' and self.floor == 'JT01' and self.username != 'EVANJUS':
+        if self.workstation == '101' and self.floor == 'JT07' and self.username != 'EVANJUS':
             raise Exception('Workstation is unavailable.')
 
     ## Setup Webdriver
