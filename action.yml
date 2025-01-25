@@ -7,8 +7,14 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout code
+    - name: Checkout composite action repository code
       uses: actions/checkout@v4
+      with:
+        repository: justinj-evans/archibus-automated-scheduler
+        ref: ${{ inputs.ref }}  # Use the ref input specified by the user
+        token: ${{ secrets.GITHUB_TOKEN }}
+        clean: true
+        path: composite-action-directory 
 
     - name: Set up Python
       uses: actions/setup-python@v5
