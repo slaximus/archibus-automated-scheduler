@@ -47,10 +47,9 @@ class archibus_scheduler():
             self.next_month_day = str((datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(weeks=4)).strftime("%#d")).lstrip("0")
 
         # Seat formatted datetime
-        self.seat_date = (datetime.now() + timedelta(weeks=4)).strftime("Choose %A, %B %d, %Y")
-        day = (datetime.now() + timedelta(weeks=4)).day
-        suffix = "th" if 11 <= day <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
-        self.seat_date = self.seat_date.replace(f"{day:02d}", f"{day}{suffix}",1)
+        self.seat_date = datetime.strptime(self.next_month, '%Y-%m-%d').strftime("Choose %A, %B %d, %Y")
+        suffix = "th" if 11 <= int(next_month_day) <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
+        self.seat_date = self.seat_date.replace(f"{int(next_month_day):02d}", f"{int(next_month_day)}{suffix}",1)
 
         # validate archnemesis
         if self.workstation == '101' and self.floor == 'JT07' and self.username != 'EVANJUS':
