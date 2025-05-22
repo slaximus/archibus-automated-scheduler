@@ -154,47 +154,22 @@ class archibus_scheduler():
         input_log_in.click()
         print(f"User Logged In")
 
-        # Menu Selection - Create Workspace Booking
-        # workspace-path-1 : this pops up in some paths depending on user-login 
-        try:
-            input_workspace_booking = self.driver.find_element(By.XPATH, f"//div[contains(text(), 'CREATE WORKSPACE BOOKING')]")
-            input_workspace_booking.click()
-            print(f'Loading Create Workspace Booking')
-            time.sleep(10)
-        except NoSuchElementException:
-            print("Pre-loaded into Create Workstation Booking")
+        ## Building Page
+        # Find all elements where the class name contains "BuildingName"
+        building_elements = self.driver.find_elements(By.CSS_SELECTOR, '[class*="BuildingName"]')
 
-        # Building Selection
-        input_building = self.driver.find_element(By.XPATH, f"//div[contains(text(), {self.building_name})]")
+        # Iterate through the elements and find the one containing "Jean Talon"
+        for element in building_elements:
+            if self.building_name in element.text:
+                input_building = element
+                break
+
         input_building.click()
-        print(f'Selected Building')
-        time.sleep(2)
+        print(f'Building Selected: {input_building.text}')
 
-        ## Workspace Menu
-        # workspace-path-2 : this pops up in some paths depending on user-login 
-        try:
-            input_workspace_booking = self.driver.find_element(By.XPATH, f"//h3[contains(text(), 'Workspaces')]")
-            input_workspace_booking.click()
-            print(f'Loading Create Workspace Booking')  
-        except NoSuchElementException:
-            print("Pre-loaded into Building Booking")
-            time.sleep(2)
-
-        # Alternative Building Selection Path
-        # even though building is selected in prior step sometimes the building appears empty, try search menu for building
-        try:
-            input_building_search = self.driver.find_element(By.XPATH, f"//div[contains(text(), 'Buildings')]")
-            input_building_search.click()
-            print(f'Searching for Building in Dropdown')
-            time.sleep(10) # longer load on dropdown search
-
-            input_building = self.driver.find_element(By.XPATH, f"//div[contains(text(), '{self.building_name}')]")
-            input_building.click()
-            print(f'Selected Building')
-            time.sleep(2)
-        except NoSuchElementException as e:
-            print(f'Exception: {e}')
-            print("Building Already Selected")
+        ## Workspace 
+        input_building = self.driver.find_element(By.CSS_SELECTOR, value='div.DashboardCard__CardContainer-sc-1eazl8g-0.igvAnp') # assume Workspace is first Card
+        input_building.click()  
 
         ### Workspace Booking
         # Manual time delays added as selenium able to find/click elements but fails on final booking button
