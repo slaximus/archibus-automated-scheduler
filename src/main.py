@@ -259,6 +259,7 @@ class archibus_scheduler():
         input_book_myself = self.driver.find_element(By.XPATH, "//span[text() = 'Myself']")
         input_book_myself.click()
         time.sleep(2)
+        print("Booking for 'Myself'")
 
         # Booking Seat
         input_book_seat = self.driver.find_element(By.XPATH, "//button[text() = 'BOOK']")
@@ -267,7 +268,9 @@ class archibus_scheduler():
 
         # Confirmation page
         self.popups()
-        input_confirmation = self.driver.find_element(By.XPATH, "//button[text() = 'GO TO MAIN']") # 'logon-sign-in-btn'
+        input_confirmation = self.wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//button[text() = 'GO TO MAIN']"))
+        )
         input_confirmation.click()
         print("Confirmation seat is booked")
 
