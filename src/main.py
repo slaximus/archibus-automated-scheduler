@@ -181,6 +181,8 @@ class archibus_scheduler():
             input_workspace_booking = self.driver.find_element(By.XPATH, f"//h3[contains(text(), 'Workspaces')]")
             input_workspace_booking.click()
             print(f'Loading Create Workspace Booking')  
+            time.sleep(2)
+            self.popups() # pop-up indicating previous day no longer available
         except NoSuchElementException:
             print("Pre-loaded into Building Booking")
             time.sleep(2)
@@ -191,15 +193,29 @@ class archibus_scheduler():
             input_building_search = self.driver.find_element(By.XPATH, f"//div[contains(text(), 'Buildings')]")
             input_building_search.click()
             print(f'Searching for Building in Dropdown')
-            time.sleep(10) # longer load on dropdown search
+            time.sleep(30) # longer load on dropdown search
+            self.popups()       
+            # # Wait for the result count message to appear with "Search items returned"
+            # self.wait.until(EC.text_to_be_present_in_element(
+            #     (By.XPATH, '//h3[@role="status"]'),"Search items returned"
+            # ))
+            # print("Building search present.")
 
-            # Wait for the result count message to appear with "Search items returned"
-            self.wait.until(EC.text_to_be_present_in_element(
-                (By.XPATH, '//h3[@role="status"]'),"Search items returned"
-            ))
-            
+            # Wait for overlay to disappear
+            # self.wait.until(EC.invisibility_of_element_located((
+            #     By.CLASS_NAME, "ReactModal__Overlay"
+            # )))
+            print('Wait for overlay to dissappear')
+            def wait_for_overlay_to_disappear(driver, timeout=20):
+                WebDriverWait(driver, timeout).until(
+                    lambda d: all(not el.is_displayed() for el in d.find_elements(By.CLASS_NAME, "ReactModal__Overlay"))
+                )
+            wait_for_overlay_to_disappear(self.driver)
+
             input_building = self.driver.find_element(By.XPATH, f"//div[contains(text(), '{self.building_name}')]")
-            input_building.click()
+            self.driver.execute_script("arguments[0].click();", input_building)
+
+            #input_building.click()
             print(f'Selected Building')
             time.sleep(2)
         except NoSuchElementException as e:
