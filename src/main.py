@@ -195,17 +195,8 @@ class archibus_scheduler():
             print(f'Searching for Building in Dropdown')
             time.sleep(30) # longer load on dropdown search
             self.popups()       
-            # # Wait for the result count message to appear with "Search items returned"
-            # self.wait.until(EC.text_to_be_present_in_element(
-            #     (By.XPATH, '//h3[@role="status"]'),"Search items returned"
-            # ))
-            # print("Building search present.")
 
-            # Wait for overlay to disappear
-            # self.wait.until(EC.invisibility_of_element_located((
-            #     By.CLASS_NAME, "ReactModal__Overlay"
-            # )))
-            print('Wait for overlay to dissappear')
+            print('Waiting for overlay to dissappear')
             def wait_for_overlay_to_disappear(driver, timeout=20):
                 WebDriverWait(driver, timeout).until(
                     lambda d: all(not el.is_displayed() for el in d.find_elements(By.CLASS_NAME, "ReactModal__Overlay"))
@@ -214,10 +205,9 @@ class archibus_scheduler():
 
             input_building = self.driver.find_element(By.XPATH, f"//div[contains(text(), '{self.building_name}')]")
             self.driver.execute_script("arguments[0].click();", input_building)
-
-            #input_building.click()
             print(f'Selected Building')
             time.sleep(2)
+
         except NoSuchElementException as e:
             print(f'Exception: {e}')
             print("Building Already Selected")
@@ -263,6 +253,7 @@ class archibus_scheduler():
         input_book_seat = self.driver.find_element(By.XPATH, "//button[text() = 'Book']")
         input_book_seat.click()
         time.sleep(2)
+        print('Book Seat')
 
         # Book for 'Myself'
         input_book_myself = self.driver.find_element(By.XPATH, "//span[text() = 'Myself']")
@@ -272,6 +263,7 @@ class archibus_scheduler():
         # Booking Seat
         input_book_seat = self.driver.find_element(By.XPATH, "//button[text() = 'BOOK']")
         input_book_seat.click()
+        time.sleep(2)
 
         # Confirmation page
         self.popups()
