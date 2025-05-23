@@ -62,8 +62,8 @@ class archibus_scheduler():
 
         service = Service(ChromeDriverManager().install())
         chrome_options = webdriver.ChromeOptions() 
-        chrome_options.add_argument("--window-size=1200,1200")
-        chrome_options.add_argument("--headless")  # Headless mode
+        chrome_options.add_argument("--window-size=1920,1080")
+        chrome_options.add_argument("--headless=new")  # Headless mode
         chrome_options.add_argument("--no-sandbox")  # Bypass OS security model
         chrome_options.add_argument("--disable-dev-shm-usage")  # Overcome limited resource problems
         chrome_options.add_argument("--disable-gpu")  # Disable GPU rendering
