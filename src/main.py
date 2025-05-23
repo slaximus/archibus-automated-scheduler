@@ -5,6 +5,8 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 import time
 from datetime import datetime, timedelta
@@ -84,6 +86,9 @@ class archibus_scheduler():
         # Min Page Load Time
         self.driver.implicitly_wait(15) 
 
+        # Min wait time for element
+        self.wait = WebDriverWait(self.driver, 10)
+
     # Known Popups
     def popups(self):
         try:
@@ -154,22 +159,52 @@ class archibus_scheduler():
         input_log_in.click()
         print(f"User Logged In")
 
-        ## Building Page
-        # Find all elements where the class name contains "BuildingName"
-        building_elements = self.driver.find_elements(By.CSS_SELECTOR, '[class*="BuildingName"]')
+        # Menu Selection - Create Workspace Booking
+        # workspace-path-1 : this pops up in some paths depending on user-login 
+        try:
+            input_workspace_booking = self.driver.find_element(By.XPATH, f"//div[contains(text(), 'CREATE WORKSPACE BOOKING')]")
+            input_workspace_booking.click()
+            print(f'Loading Create Workspace Booking')
+            time.sleep(10)
+        except NoSuchElementException:
+            print("Pre-loaded into Create Workstation Booking")
 
-        # Iterate through the elements and find the one containing "Jean Talon"
-        for element in building_elements:
-            if self.building_name in element.text:
-                input_building = element
-                break
-
+        # Building Selection
+        input_building = self.driver.find_element(By.XPATH, f"//div[contains(text(), {self.building_name})]")
         input_building.click()
-        print(f'Building Selected: {input_building.text}')
+        print(f'Selected Building')
+        time.sleep(2)
 
-        ## Workspace 
-        input_building = self.driver.find_element(By.CSS_SELECTOR, value='div.DashboardCard__CardContainer-sc-1eazl8g-0.igvAnp') # assume Workspace is first Card
-        input_building.click()  
+        ## Workspace Menu
+        # workspace-path-2 : this pops up in some paths depending on user-login 
+        try:
+            input_workspace_booking = self.driver.find_element(By.XPATH, f"//h3[contains(text(), 'Workspaces')]")
+            input_workspace_booking.click()
+            print(f'Loading Create Workspace Booking')  
+        except NoSuchElementException:
+            print("Pre-loaded into Building Booking")
+            time.sleep(2)
+
+        # Alternative Building Selection Path
+        # even though building is selected in prior step sometimes the building appears empty, try search menu for building
+        try:
+            input_building_search = self.driver.find_element(By.XPATH, f"//div[contains(text(), 'Buildings')]")
+            input_building_search.click()
+            print(f'Searching for Building in Dropdown')
+            time.sleep(10) # longer load on dropdown search
+
+            # Wait for the result count message to appear with "Search items returned"
+            self.wait.until(EC.text_to_be_present_in_element(
+                (By.XPATH, '//h3[@role="status"]'),"Search items returned"
+            ))
+            
+            input_building = self.driver.find_element(By.XPATH, f"//div[contains(text(), '{self.building_name}')]")
+            input_building.click()
+            print(f'Selected Building')
+            time.sleep(2)
+        except NoSuchElementException as e:
+            print(f'Exception: {e}')
+            print("Building Already Selected")
 
         ### Workspace Booking
         # Manual time delays added as selenium able to find/click elements but fails on final booking button
