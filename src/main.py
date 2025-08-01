@@ -118,12 +118,14 @@ input_username = WebDriverWait(self.driver, 15).until(
 input_username.clear()
 input_username.send_keys(self.username)
 
+# Wait for the password input field to be visible
 input_password = WebDriverWait(self.driver, 15).until(
     EC.visibility_of_element_located((By.ID, 'password_input'))
 )
 input_password.clear()
 input_password.send_keys(self.password)
 
+# Wait for the sign-in button to be clickable
 input_log_in = WebDriverWait(self.driver, 15).until(
     EC.element_to_be_clickable((By.ID, 'signin_button'))
 )
