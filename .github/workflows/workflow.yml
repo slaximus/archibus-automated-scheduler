@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   # # uncomment to activate scheduler
    schedule:
-     - cron: "0 5 * * 1,3,5"
+     - cron: "0 16 * * 1,3,5"
 
 jobs:
   archibus-automated-scheduler:
