@@ -111,23 +111,24 @@ class archibus_scheduler():
         self.setup()
         self.driver.get("https://pathfinder.horizantsolutions.com/archibus/login.axvw")
 
-        # ✅ Corrected Login
-        input_username = WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.ID, 'username_input'))
-        )
-        input_username.send_keys(self.username)
+        #  Login
+input_username = WebDriverWait(self.driver, 15).until(
+    EC.visibility_of_element_located((By.ID, 'username_input'))
+)
+input_username.clear()
+input_username.send_keys(self.username)
 
-        input_password = WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.ID, 'password_input'))
-        )
-        input_password.send_keys(self.password)
+input_password = WebDriverWait(self.driver, 15).until(
+    EC.visibility_of_element_located((By.ID, 'password_input'))
+)
+input_password.clear()
+input_password.send_keys(self.password)
 
-        input_log_in = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.ID, 'signin_button'))
-        )
-        input_log_in.click()
-        print("User Logged In")
-
+input_log_in = WebDriverWait(self.driver, 15).until(
+    EC.element_to_be_clickable((By.ID, 'signin_button'))
+)
+input_log_in.click()
+print("User Logged In")
         # Create Workspace Booking
         try:
             input_workspace_booking = WebDriverWait(self.driver, 10).until(
