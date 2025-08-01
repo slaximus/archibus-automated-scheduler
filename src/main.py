@@ -140,77 +140,110 @@ class archibus_scheduler():
             raise NoSuchElementException("No available seat found")  # Raise an exception if neither seat is available
 
     # Selenium Actions to Walk Webpage
-    def actions(self):
+def actions(self):
+    # Setup
+    self.setup()
 
-        # Setup
-        self.setup()
+    # Archibus Webpage
+    self.driver.get("https://pathfinder.horizantsolutions.com/archibus/schema/ab-products/essential/workplace/index.html")
 
-        # Archibus Webpage
-        self.driver.get("https://pathfinder.horizantsolutions.com/archibus/schema/ab-products/essential/workplace/index.html")
+    # Check for Guest Button
+    try:
+        guest_button = WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((By.ID, 'guest_button'))
+        )
+        if guest_button.is_displayed():
+            guest_button.click()
+            print("Clicked 'Log in as Guest' button")
+    except NoSuchElementException:
+        print("Guest button not found, proceeding with login.")
 
-        ## Login Page
-        input_username = self.driver.find_element(by=By.ID,value='logon-user-input')
-        input_username.send_keys(self.username)
+    ## Login Page
+    input_username = WebDriverWait(self.driver, 10).until(
+        EC.visibility_of_element_located((By.ID, 'logon-user-input'))
+    )
+    input_username.send_keys(self.username)
 
-        input_password = self.driver.find_element(by=By.ID,value='logon-password-input')
-        input_password.send_keys(self.password)
+    input_password = WebDriverWait(self.driver, 10).until(
+        EC.visibility_of_element_located((By.ID, 'logon-password-input'))
+    )
+    input_password.send_keys(self.password)
 
-        input_log_in = self.driver.find_element(By.CSS_SELECTOR, '[data-testid="logon-sign-in-btn"]') # 'logon-sign-in-btn'
-        input_log_in.click()
-        print(f"User Logged In")
+    input_log_in = WebDriverWait(self.driver, 10).until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, '[data-testid="logon-sign-in-btn"]'))
+    )
+    input_log_in.click()
+    print("User Logged In")
 
-        # Menu Selection - Create Workspace Booking
-        # workspace-path-1 : this pops up in some paths depending on user-login 
-        try:
-            input_workspace_booking = self.driver.find_element(By.XPATH, f"//div[contains(text(), 'CREATE WORKSPACE BOOKING')]")
-            input_workspace_booking.click()
-            print(f'Loading Create Workspace Booking')
-            time.sleep(10)
-        except NoSuchElementException:
-            print("Pre-loaded into Create Workstation Booking")
+    # Menu Selection - Create Workspace Booking
+    try:
+        input_workspace_booking = WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//div[contains(text(), 'CREATE WORKSPACE BOOKING')]"))
+        )
+        input_workspace_booking.click()
+        print("Loading Create Workspace Booking")
+    except NoSuchElementException:
+        print("Pre-loaded into Create Workstation Booking")
 
-        # Building Selection
-        input_building = self.driver.find_element(By.XPATH, f"//div[contains(text(), {self.building_name})]")
-        input_building.click()
-        print(f'Selected Building')
-        time.sleep(2)
+    # Building Selection
+    input_building = WebDriverWait(self.driver, 10).until(
+        EC.visibility_of_element_located((By.XPATH, f"//div[contains(text(), '{self.building_name}')]"))
+    )
+    input_building.click()
+    print("Selected Building")
 
-        ## Workspace Menu
-        # workspace-path-2 : this pops up in some paths depending on user-login 
-        try:
-            input_workspace_booking = self.driver.find_element(By.XPATH, f"//h3[contains(text(), 'Workspaces')]")
-            input_workspace_booking.click()
-            print(f'Loading Create Workspace Booking')  
-            time.sleep(2)
-            self.popups() # pop-up indicating previous day no longer available
-        except NoSuchElementException:
-            print("Pre-loaded into Building Booking")
-            time.sleep(2)
+    # Workspace Menu
+    try:
+        input_workspace_booking = WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//h3[contains(text(), 'Workspaces')]"))
+        )
+        input_workspace_booking.click()
+        print("Loading Create Workspace Booking")
+    except NoSuchElementException:
+        print("Pre-loaded into Building Booking")
 
-        # Alternative Building Selection Path
-        # even though building is selected in prior step sometimes the building appears empty, try search menu for building
-        try:
-            input_building_search = self.driver.find_element(By.XPATH, f"//div[contains(text(), 'Buildings')]")
-            input_building_search.click()
-            print(f'Searching for Building in Dropdown')
-            time.sleep(30) # longer load on dropdown search
-            self.popups()       
+    # Alternative Building Selection Path
+    try:
+        input_building_search = WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//div[contains(text(), 'Buildings')]"))
+        )
+        input_building_search.click()
+        print("Searching for Building in Dropdown")
+        self.popups()
 
-            print('Waiting for overlay to dissappear')
-            def wait_for_overlay_to_disappear(driver, timeout=20):
-                WebDriverWait(driver, timeout).until(
-                    lambda d: all(not el.is_displayed() for el in d.find_elements(By.CLASS_NAME, "ReactModal__Overlay"))
-                )
-            wait_for_overlay_to_disappear(self.driver)
+        # Wait for overlay to disappear
+        self.wait_for_overlay_to_disappear()
 
-            input_building = self.driver.find_element(By.XPATH, f"//div[contains(text(), '{self.building_name}')]")
-            self.driver.execute_script("arguments[0].click();", input_building)
-            print(f'Selected Building')
-            time.sleep(2)
+        input_building = WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, f"//div[contains(text(), '{self.building_name}')]"))
+        )
+        self.driver.execute_script("arguments[0].click();", input_building)
+        print("Selected Building")
+    except NoSuchElementException as e:
+        print(f"Exception: {e}")
+        print("Building Already Selected")
 
-        except NoSuchElementException as e:
-            print(f'Exception: {e}')
-            print("Building Already Selected")
+    # Workspace Booking
+    self.popups()
+
+    ## StartDate
+    calendar = WebDriverWait(self.driver, 10).until(
+        EC.element_to_be_clickable((By.ID, 'startData_icon'))
+    )
+    calendar.click()
+
+    input_next_month = WebDriverWait(self.driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[@aria-label='Select next month']"))
+    )
+    input_next_month.click()
+
+    date = WebDriverWait(self.driver, 10).until(
+        EC.visibility_of_element_located((By.XPATH, f"//div[@aria-label='{self.seat_date}']"))
+    )
+    actions = ActionChains(self.driver)
+    actions.move_to_element(date).click().perform()
+    print(f"Date Selected: {self.next_month}")
+
 
         ### Workspace Booking
         # Manual time delays added as selenium able to find/click elements but fails on final booking button
